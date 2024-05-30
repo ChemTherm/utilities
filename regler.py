@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
+
 class easy_PI:
     soll = 0
     ki = 0.000013
@@ -10,11 +11,14 @@ class easy_PI:
     time_last_call = datetime.now()
     pwroutput = 0
 
-    def __init__(self, out_handle, input_channel, input_handle) -> None:
+    def __init__(self, out_handle, ouput_channel, input_handle, input_channel, ki, kp) -> None:
         self.running = False
         self.input = input_handle
         self.input_channel = input_channel
-        self.out = out_handle
+        self.output_device = out_handle
+        self.ki = ki
+        self.kp = kp
+        self.out = 0
 
     def config(self, ki, kp):
         self.ki = ki
@@ -34,7 +38,7 @@ class easy_PI:
 
     def regeln(self):
         if self.running == True:
-            delta = self.soll - self.input.value[self.input_channel]
+            delta = self.soll - self.input.values[self.input_channel]
             p = self.kp*(delta)
             now = datetime.now()
             dtime = (now - self.time_last_call).total_seconds()
