@@ -10,10 +10,10 @@ class easy_PI:
     time_last_call = datetime.now()
     pwroutput = 0
 
-    def __init__(self, out_handle, channel, ist_handle) -> None:
+    def __init__(self, out_handle, input_channel, input_handle) -> None:
         self.running = False
-        self.ist = ist_handle
-        self.channel = channel
+        self.input = input_handle
+        self.input_channel = input_channel
         self.out = out_handle
 
     def config(self, ki, kp):
@@ -34,7 +34,7 @@ class easy_PI:
 
     def regeln(self):
         if self.running == True:
-            delta = self.soll - self.ist.value
+            delta = self.soll - self.input.value[self.input_channel]
             p = self.kp*(delta)
             now = datetime.now()
             dtime = (now - self.time_last_call).total_seconds()
