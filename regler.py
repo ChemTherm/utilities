@@ -19,6 +19,7 @@ class easy_PI:
         self.ki = ki
         self.kp = kp
         self.out = 0
+        self.sec_diff = 0
 
     def config(self, ki, kp):
         self.ki = ki
@@ -29,6 +30,10 @@ class easy_PI:
         self.running = True
         self.time_last_call = datetime.now()
 
+    def security(self, tc_handle, diff):
+        self.tc_S = tc_handle
+        self.sec_diff = 30
+
     def stop(self):
         self.running = False
         self.regeln()
@@ -36,8 +41,18 @@ class easy_PI:
     def set_soll(self, soll):
         self.soll = soll
 
+    def set_secureOff(self):
+        self.secureOff = True
+
     def regeln(self):
-        if self.running == True:
+        dT_sec = 0
+        if self.sec_diff > 0:
+            dT_sec =  self.tc_S.t - (self.t_soll+self.sec_diff)     #Sicherheitstemperatur
+            if self.tc_S.t > 300:
+                dT_sec = 50
+        if dT_sec > 0:
+            print('Temperaturwächter aktiv')
+        if self.running == True and dT_sec <= 0 and self.secureOff == False:
             delta = self.soll - self.input.values[self.input_channel]
             p = self.kp*(delta)
             now = datetime.now()
@@ -58,3 +73,4 @@ class easy_PI:
         else:
             duty = 0
             self.out = duty
+            self.secureOff = False
