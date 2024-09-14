@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
+class CustomInput:
+    def __init__(self):
+        self.data = {}
+        self.values = [0, 0, 0, 0]
+    
 
 class easy_PI:
     soll = 0
@@ -13,8 +18,13 @@ class easy_PI:
 
     def __init__(self, out_handle, ouput_channel, input_handle, input_channel, ki, kp) -> None:
         self.running = False
-        self.input = input_handle
         self.input_channel = input_channel
+        if "extern" in input_handle.lower(): # nur für Debug. muss noch was hinzugefügt werden
+            self.input= CustomInput()
+        else:
+            self.input = input_handle
+            
+
         self.output_device = out_handle
         self.ki = ki
         self.kp = kp
