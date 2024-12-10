@@ -15,22 +15,7 @@ class easy_PI:
     i = 0
     time_last_call = datetime.now()
     pwroutput = 0
-
-    def __init__(self, out_handle, ouput_channel, input_handle, input_channel, ki, kp) -> None:
-        self.running = False
-        self.input_channel = input_channel
-        if isinstance(input_handle,str) and "extern" in input_handle.lower(): # nur für Debug. muss noch was hinzugefügt werden
-            self.input= CustomInput()
-        else:
-            self.input = input_handle
-            
-
-        self.output_device = out_handle
-        self.ki = ki
-        self.kp = kp
-        self.out = 0
-        self.sec_diff = 0
-
+    
     def config(self, ki, kp):
         self.ki = ki
         self.kp = kp
@@ -43,6 +28,20 @@ class easy_PI:
     def security(self, tc_handle, diff):
         self.tc_S = tc_handle
         self.sec_diff = 30
+
+    def __init__(self, out_handle, ouput_channel, input_handle, input_channel, ki, kp, security_tc_handle) -> None:
+        self.running = False
+        self.input_channel = input_channel
+        if isinstance(input_handle,str) and "extern" in input_handle.lower(): # nur für Debug. muss noch was hinzugefügt werden
+            self.input= CustomInput()
+        else:
+            self.input = input_handle
+            
+        self.output_device = out_handle
+        self.ki = ki
+        self.kp = kp
+        self.out = 0
+        self.security(security_tc_handle, 30)
 
     def stop(self):
         self.running = False
